@@ -1,0 +1,21 @@
+#!/bin/sh -f
+
+for t in `ls ./testcases`
+do
+	fName="./testcases/$t"
+	/usr/bin/time -f "%e" ./prog < $fName
+	if [ "$?" -ne "0" ]
+	then
+		echo "Test $t: Incorrect Output."
+		break
+	fi
+
+	timeTaken=`/usr/bin/time -f "%e" ./prog < $fName 2>&1`
+	allowed=`echo "$timeTaken < 3.0" | bc -l`
+	if [ $allowed ]
+	then
+		echo "Test $t: Success!"
+	else
+		echo "Test $t: Time Limit Exceeded."
+	fi
+done
